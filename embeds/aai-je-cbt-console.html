@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAI Junior Executive CBT — Study Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1420; --bg2:#0c1826; --panel:#122234; --panel2:#16293f;
+  --line:rgba(150,180,210,.13); --line2:rgba(150,180,210,.26);
+  --ink:#eaf1fa; --muted:#94a7c0; --dim:#68809c;
+  --amber:#f5a623; --sky:#4aa3ff; --teal:#2fd4c4; --green:#46e6a8; --rose:#ff6b7d; --violet:#b98cff;
+  --mono:'JetBrains Mono',monospace; --disp:'Space Grotesk',sans-serif; --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.62;-webkit-font-smoothing:antialiased}
+::selection{background:var(--amber);color:#1a1200}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;background:linear-gradient(90deg,var(--amber),var(--sky),var(--teal));box-shadow:0 0 12px var(--amber)}
+
+/* nav */
+header.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,20,32,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:16px}
+.brand{font-family:var(--mono);font-weight:700;font-size:13.5px;letter-spacing:.5px;white-space:nowrap;color:var(--amber)}
+.brand small{color:var(--dim);font-weight:400}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;white-space:nowrap;transition:.18s;border:1px solid transparent}
+.tabs a:hover{color:var(--ink);background:var(--panel)}
+.tabs a.active{color:var(--amber);border-color:var(--line2);background:var(--panel)}
+.tabs a:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+main{max-width:1180px;margin:0 auto;padding:0 22px}
+
+/* hero — departure board */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 60px}
+.eyebrow{font-family:var(--mono);color:var(--teal);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fadeUp .7s .1s forwards}
+.board{display:inline-flex;flex-direction:column;gap:6px;margin-bottom:26px}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(34px,6.5vw,74px);line-height:1.0;letter-spacing:-2px}
+.hero h1 span{display:block;opacity:0;transform:translateY(22px);animation:fadeUp .8s forwards}
+.hero h1 .l1{animation-delay:.15s}
+.hero h1 .l2{animation-delay:.3s;color:var(--amber)}
+.flip{display:inline-block;font-family:var(--mono);font-size:.42em;letter-spacing:2px;color:var(--dim);vertical-align:middle;margin-left:10px}
+.hero .sub{max-width:640px;color:var(--muted);font-size:16.5px;opacity:0;animation:fadeUp .8s .55s forwards;margin:22px 0 32px}
+.hero .sub b{color:var(--ink);font-weight:600}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .7s forwards}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 17px;min-width:110px}
+.stat .n{font-family:var(--disp);font-weight:700;font-size:23px;color:var(--amber)}
+.stat .l{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.scrollcue{margin-top:40px;font-family:var(--mono);font-size:11.5px;color:var(--dim);opacity:0;animation:fadeUp .8s .85s forwards}
+.scrollcue .arw{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* disclaimer banner */
+.banner{margin:0 0 8px;background:linear-gradient(90deg,rgba(245,166,35,.09),transparent);border:1px solid rgba(245,166,35,.3);border-left:3px solid var(--amber);border-radius:12px;padding:16px 18px;opacity:0;animation:fadeUp .8s .95s forwards}
+.banner .t{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+.banner p{font-size:14px;color:var(--muted)}
+.banner b{color:var(--ink)}
+
+/* section */
+section.subj{padding:60px 0 18px;scroll-margin-top:70px}
+.flightstrip{display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.gate{font-family:var(--mono);font-weight:700;font-size:12px;color:#1a1200;background:var(--amber);padding:5px 11px;border-radius:6px;letter-spacing:1px}
+.gate.b{background:var(--sky);color:#04101f}
+.flightstrip h2{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3.8vw,36px);letter-spacing:-1px}
+.status{font-family:var(--mono);font-size:10px;color:var(--teal);border:1px solid var(--line2);padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:1px}
+.sec-lead{color:var(--muted);max-width:770px;margin-bottom:24px;font-size:15px}
+.divider{height:1px;background:linear-gradient(90deg,var(--line2),transparent);margin-bottom:28px}
+.part-head{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin:40px 0 4px;padding-top:20px;border-top:1px dashed var(--line2)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:15px;margin-bottom:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:19px;transition:.22s}
+.card:hover{border-color:var(--line2);transform:translateY(-3px);box-shadow:0 14px 40px -18px rgba(0,0,0,.7)}
+.card h4{font-family:var(--disp);font-size:15.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h4 .ic{font-family:var(--mono);font-size:12px;color:var(--sky)}
+.card p{font-size:13.5px;color:var(--muted)}.card p+p{margin-top:7px}
+.inl{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--teal)}
+.trick{border-left:3px solid var(--amber);background:linear-gradient(90deg,rgba(245,166,35,.06),transparent)}
+.trick h4 .ic{color:var(--amber)}
+.pitfall{border-left:3px solid var(--rose);background:linear-gradient(90deg,rgba(255,107,125,.06),transparent)}
+.pitfall h4 .ic{color:var(--rose)}
+.fact{border-left:3px solid var(--teal);background:linear-gradient(90deg,rgba(47,212,196,.06),transparent)}
+.fact h4 .ic{color:var(--teal)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-bottom:24px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:480px}
+th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--sky);background:var(--bg2)}
+td{color:var(--muted)}td:first-child{color:var(--ink);font-weight:500}
+tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono)}.amb{color:var(--amber)!important}.gd{color:var(--green)!important}
+
+/* problems */
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:15px;overflow:hidden}
+.prob-head{padding:16px 20px;display:flex;gap:13px;align-items:flex-start}
+.plabel{font-family:var(--mono);font-size:11px;font-weight:700;color:#04101f;background:var(--sky);padding:4px 9px;border-radius:6px;white-space:nowrap;margin-top:2px}
+.plabel.hard{background:var(--rose)}.plabel.med{background:var(--amber);color:#1a1200}.plabel.easy{background:var(--green)}
+.qtext{font-size:14.5px;font-weight:500}.qtext .m{font-family:var(--mono);color:var(--teal);font-size:13px}
+.sol-btn{margin:0 20px 16px;font-family:var(--mono);font-size:12px;color:var(--green);background:transparent;border:1px solid var(--line2);padding:8px 14px;border-radius:8px;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:8px}
+.sol-btn:hover{background:rgba(70,230,168,.08);border-color:var(--green)}
+.sol-btn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.sol-btn .tri{transition:transform .25s}.sol-btn.open .tri{transform:rotate(90deg)}
+.sol{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.3,.7,.2,1)}
+.sol-inner{padding:2px 0 4px;border-top:1px dashed var(--line2);margin:0 20px 20px}
+.sol-inner .step{display:flex;gap:12px;margin-top:14px}
+.snum{font-family:var(--mono);font-size:11px;color:var(--sky);font-weight:700;flex-shrink:0;border:1px solid var(--line2);width:24px;height:24px;border-radius:6px;display:grid;place-items:center}
+.stxt{font-size:13.5px;color:var(--muted)}.stxt b{color:var(--ink);font-weight:600}
+.answer{margin-top:16px;font-family:var(--mono);font-size:13px;color:var(--green);background:rgba(70,230,168,.07);border:1px solid rgba(70,230,168,.3);border-radius:9px;padding:11px 15px;display:flex;gap:10px;align-items:baseline}
+.answer .k{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+
+/* link card to companion page */
+.linkcard{background:linear-gradient(120deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:14px;padding:20px;margin-bottom:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.linkcard .ico{font-size:26px}
+.linkcard .tx{flex:1;min-width:220px}
+.linkcard h4{font-family:var(--disp);font-size:16px;margin-bottom:4px}
+.linkcard p{font-size:13.5px;color:var(--muted)}
+.linkcard code{font-family:var(--mono);font-size:12px;color:var(--amber)}
+
+footer{max-width:1180px;margin:56px auto 0;padding:32px 22px 60px;border-top:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:12px}
+footer b{color:var(--muted)}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:90;font-family:var(--mono);font-size:11px;background:var(--panel);border:1px solid var(--line2);color:var(--amber);padding:9px 13px;border-radius:9px;cursor:pointer;opacity:0;pointer-events:none;transition:.25s}
+.backtop.show{opacity:1;pointer-events:auto}.backtop:hover{background:var(--panel2)}
+@media (max-width:640px){.hero{padding-top:100px}.flip{display:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">✈ AAI-JE / CBT <small>board</small></div>
+    <nav class="tabs" id="tabs">
+      <a href="#brief">exam-brief</a>
+      <a href="#reasoning">reasoning</a>
+      <a href="#quant">aptitude</a>
+      <a href="#english">english</a>
+      <a href="#ga">gen-awareness</a>
+      <a href="#partb">part-b (IT)</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="eyebrow">// airports authority of india · junior executive · computer based test</div>
+    <h1>
+      <span class="l1">Clear the board.</span>
+      <span class="l2">Board the exam. <span class="flip">STATUS ▸ BOARDING</span></span>
+    </h1>
+    <p class="sub">A single-file study console for the <b>AAI Junior Executive CBT</b> — every worked problem, shortcut and fact you need for <b>Part A</b> (Reasoning, Aptitude, English, General Awareness) plus a bridge to <b>Part B</b> for the IT discipline. Trick first, then problems with fully revealed step-by-step solutions.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">120<span style="font-size:14px">min</span></div><div class="l">CBT duration</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">negative marking</div></div>
+      <div class="stat"><div class="n">A+B</div><div class="l">two parts</div></div>
+      <div class="stat"><div class="n">35+</div><div class="l">solved problems</div></div>
+    </div>
+    <div class="scrollcue">scroll to board <span class="arw">↓</span> &nbsp;·&nbsp; no negative marking = <b style="color:var(--amber)">attempt every question</b></div>
+  </section>
+
+  <!-- EXAM BRIEF -->
+  <section class="subj" id="brief">
+    <div class="flightstrip reveal"><span class="gate">INFO</span><h2>Exam Brief &amp; Strategy</h2><span class="status">read first</span></div>
+    <div class="divider reveal"></div>
+
+    <div class="banner reveal" style="animation:none;opacity:1">
+      <div class="t">⚠ accuracy note — read this</div>
+      <p><b>The official AAI 2026 syllabus for the current advertisement has not been released yet.</b> AAI has stated it will be uploaded with the notification. Everything here is built on the <b>previous AAI Junior Executive cycle</b> and standard CBT topics — treat it as preparation guidance, and confirm the final pattern, section split and your <b>discipline's Part B</b> against the official notification on <span class="inl">aai.aero</span> when it drops.</p>
+    </div>
+
+    <div class="grid" style="margin-top:22px">
+      <div class="card reveal"><h4><span class="ic">▸</span>The two-part structure</h4>
+        <p><b>Part A — common to all disciplines:</b> English Comprehension, General Intelligence &amp; Reasoning, Quantitative / Numerical Aptitude, General Awareness.</p>
+        <p><b>Part B — discipline-specific:</b> subject knowledge for your post (IT, Electronics, Civil, Electrical, ATC, etc.).</p></div>
+      <div class="card reveal"><h4><span class="ic">▸</span>Format (previous cycle)</h4>
+        <p>Objective / multiple-choice, <b>online CBT</b>, ~120–150 questions, <b>120 minutes</b>, 1 mark each, <b>no negative marking</b>.</p>
+        <p>Selection: CBT → (post-specific tests like PET/voice test) → document verification.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Strategy that wins</h4>
+        <p><b>No negative marking → leave nothing blank.</b> Even an educated guess is free expected marks.</p>
+        <p>Part A is fast and high-yield — Reasoning &amp; Aptitude reward practised shortcuts. Bank those marks first, then spend time on Part B.</p></div>
+    </div>
+
+    <div class="linkcard reveal">
+      <div class="ico">🎯</div>
+      <div class="tx">
+        <h4>Which discipline are you sitting?</h4>
+        <p>Part B changes completely by post. This page fully covers <b>Part A</b> (for everyone) and gives a <b>Part B bridge for IT/CSE</b>. If you're Civil / Electrical / Electronics / ATC, tell me and I'll swap in that discipline's technical set.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="part-head reveal">Part A · common to all disciplines</p>
+
+  <!-- REASONING -->
+  <section class="subj" id="reasoning">
+    <div class="flightstrip reveal"><span class="gate">A1</span><h2>Reasoning</h2><span class="status">high-yield</span></div>
+    <p class="sec-lead reveal">Pure speed marks. The trick is pattern recognition — spot the type in 3 seconds (series / coding / relations / direction / syllogism) and apply the fixed method.</p>
+    <div class="divider reveal"></div>
+
+    <div class="grid">
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Number series</h4>
+        <p>Check <b>first differences</b>; if not constant, check <b>second differences</b>, then ratios (×/÷), then squares/cubes/primes. Most series fall to one of these.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Blood relations</h4>
+        <p>Draw a quick tree. "My father's only son" = the speaker (if male). Convert every clause to +/− generation and male/female before answering.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Directions</h4>
+        <p>Sketch it. Each <b>right</b> turn cycles N→E→S→W; each <b>left</b> N→W→S→E. Net displacement = combine along the two axes; distance = Pythagoras if needed.</p></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q1</span><div class="qtext">Find the next term: <span class="m">3, 6, 11, 18, 27, ?</span></div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">First differences: 6−3=3, 11−6=5, 18−11=7, 27−18=9 → the gaps are <b>3,5,7,9</b> (consecutive odd numbers).</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Next gap = 11 → 27 + 11.</div></div>
+        <div class="answer"><span class="k">ans</span> 38</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q2</span><div class="qtext">Pointing to a photo, a man says, "She is the daughter of my grandfather's only son." How is she related to him?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">"My grandfather's only son" = the man's <b>father</b>.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">So she is "the daughter of my father" = the man's <b>sister</b>.</div></div>
+        <div class="answer"><span class="k">ans</span> She is his sister</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">Q3</span><div class="qtext">A man walks 5 km North, turns right and walks 3 km, turns right again and walks 5 km. How far and in which direction is he from the start?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">North 5. First right (facing N) → East 3. Second right (facing E) → South 5.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">North 5 and South 5 cancel. Only East 3 remains.</div></div>
+        <div class="answer"><span class="k">ans</span> 3 km, due East of the start</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q4</span><div class="qtext">In a code, <span class="m">MANGO → NBOHP</span>. Encode <span class="m">FRUIT</span>.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Each letter shifts <b>+1</b>: M→N, A→B, N→O, G→H, O→P. It's a simple forward shift.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Apply +1 to FRUIT: F→G, R→S, U→V, I→J, T→U.</div></div>
+        <div class="answer"><span class="k">ans</span> GSVJU</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">Q5</span><div class="qtext">Statements: All pens are books. All books are pencils. Which conclusion follows?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Chain the universals: pens ⊆ books ⊆ pencils.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Therefore pens ⊆ pencils. (The reverse, "all pencils are pens", does NOT follow.)</div></div>
+        <div class="answer"><span class="k">ans</span> All pens are pencils — valid</div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- QUANT -->
+  <section class="subj" id="quant">
+    <div class="flightstrip reveal"><span class="gate">A2</span><h2>Quantitative Aptitude</h2><span class="status">practice daily</span></div>
+    <p class="sec-lead reveal">The single most improvable section. Percentages, ratios, profit-loss, time-speed-distance, time-work, SI/CI — learn the shortcut form of each and you'll clear these in under a minute.</p>
+    <div class="divider reveal"></div>
+
+    <div class="grid">
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Successive % change</h4>
+        <p>For +a% then +b%, net = <span class="inl">a + b + ab/100</span> (use −ve for decrease). +20 then −20 → 20−20−400/100 = <b>−4%</b>. Never just add.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Speed conversions</h4>
+        <p><span class="inl">m/s → km/h</span>: ×18/5. <span class="inl">km/h → m/s</span>: ×5/18. Crossing a pole: time = length ÷ speed. Crossing a platform: add platform length.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Work = LCM trick</h4>
+        <p>Take total work = LCM of the days. Each worker's rate = total ÷ their days. Add rates, divide total by the sum. Fast and no fractions.</p></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q1</span><div class="qtext">A number is increased by 20% then decreased by 20%. Net change?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Multiply factors: ×1.20 then ×0.80 = <b>0.96</b>.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">0.96 means 96% of the original → a 4% drop.</div></div>
+        <div class="answer"><span class="k">ans</span> 4% decrease (not 0% — the shortcut a+b+ab/100 confirms it)</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q2</span><div class="qtext">A 120 m long train crosses a pole in 6 seconds. Find its speed in km/h.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Crossing a pole → distance = train length = 120 m. Speed = 120 ÷ 6 = <b>20 m/s</b>.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Convert: 20 × 18/5 = 72.</div></div>
+        <div class="answer"><span class="k">ans</span> 72 km/h</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q3</span><div class="qtext">A can finish a job in 10 days, B in 15 days. Working together, how long?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Let total work = LCM(10,15) = 30 units. A's rate = 3/day, B's rate = 2/day.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Combined = 5 units/day → 30 ÷ 5 = 6.</div></div>
+        <div class="answer"><span class="k">ans</span> 6 days</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">Q4</span><div class="qtext">Find the difference between CI and SI on <span class="m">₹5000</span> at <span class="m">10%</span> per annum for <span class="m">2 years</span>.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">SI = P·r·t/100 = 5000·10·2/100 = <b>₹1000</b>.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">CI = P[(1+r/100)² − 1] = 5000(1.21 − 1) = <b>₹1050</b>.</div></div>
+        <div class="step"><div class="snum">3</div><div class="stxt">Shortcut for 2 years: difference = P·(r/100)² = 5000·(0.1)² = 5000·0.01.</div></div>
+        <div class="answer"><span class="k">ans</span> Difference = ₹50 &nbsp;(SI ₹1000 · CI ₹1050)</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q5</span><div class="qtext">The average of 5 numbers is 20. If a number 18 is removed, what is the average of the rest?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Total = 5 × 20 = 100. Remove 18 → remaining sum = 82 over 4 numbers.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">82 ÷ 4 = 20.5.</div></div>
+        <div class="answer"><span class="k">ans</span> 20.5</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q6</span><div class="qtext">The ages of A and B are in ratio <span class="m">3:5</span> and their sum is 40. Find each age.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Let ages be 3x and 5x → 3x + 5x = 8x = 40 → x = 5.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">A = 3×5 = 15, B = 5×5 = 25.</div></div>
+        <div class="answer"><span class="k">ans</span> A = 15 years, B = 25 years</div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ENGLISH -->
+  <section class="subj" id="english">
+    <div class="flightstrip reveal"><span class="gate">A3</span><h2>English Comprehension</h2><span class="status">quick wins</span></div>
+    <p class="sec-lead reveal">Grammar rules, error spotting, vocabulary and reading comprehension. The grammar rules are finite — nail the top ones and error-spotting becomes automatic.</p>
+    <div class="divider reveal"></div>
+
+    <div class="grid">
+      <div class="card trick reveal"><h4><span class="ic">▸</span>"One of the ___"</h4>
+        <p><span class="inl">one of the + plural noun + singular verb</span>. "One of the best <b>players</b> <b>is</b>…" A classic error-spotting trap.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>since vs for</h4>
+        <p><b>since</b> + a point in time (since 2015, since Monday). <b>for</b> + a duration (for 3 years). Both pair with present perfect / perfect continuous.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>RC time-saver</h4>
+        <p>Read the questions first, then scan the passage for keywords. Answer <b>vocabulary/detail</b> questions before <b>inference/tone</b> ones — they're faster and safer.</p></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q1</span><div class="qtext">Spot the error: "He is one of the best <u>player</u> in the team."</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">"One of the" must be followed by a <b>plural</b> noun.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">"player" → "players".</div></div>
+        <div class="answer"><span class="k">ans</span> Correct form: "one of the best players in the team"</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q2</span><div class="qtext">Fill in the blank: "She has been working here ___ 2015."</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">2015 is a fixed point in time, not a duration → use <b>since</b>.</div></div>
+        <div class="answer"><span class="k">ans</span> since</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">Q3</span><div class="qtext">Choose the synonym of <span class="m">EPHEMERAL</span>.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Ephemeral = lasting a very short time. Root hint: "ephemera" = things that don't last.</div></div>
+        <div class="answer"><span class="k">ans</span> Transient / short-lived (opposite: permanent, lasting)</div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- GENERAL AWARENESS -->
+  <section class="subj" id="ga">
+    <div class="flightstrip reveal"><span class="gate">A4</span><h2>General Awareness</h2><span class="status">aviation edge</span></div>
+    <p class="sec-lead reveal">Static GK + current affairs. Your unfair advantage here is <b>AAI &amp; aviation GK</b> — very likely to appear in an AAI paper and easy to lock down. These facts are verified below.</p>
+    <div class="divider reveal"></div>
+
+    <div class="grid">
+      <div class="card fact reveal"><h4><span class="ic">◆</span>AAI — the essentials</h4>
+        <p>Formed <b>1 April 1995</b> by merging the <b>International Airports Authority of India (1972)</b> and the <b>National Airports Authority (1986)</b>, under the <b>Airports Authority of India Act, 1994</b>.</p>
+        <p>It's a <b>statutory body / Miniratna Category-1</b> PSE under the <b>Ministry of Civil Aviation</b>.</p></div>
+      <div class="card fact reveal"><h4><span class="ic">◆</span>AAI — where &amp; what</h4>
+        <p>HQ: <b>Rajiv Gandhi Bhawan, Safdarjung Airport, New Delhi</b>. Five regional HQs: <b>Delhi (N), Mumbai (W), Kolkata (E), Chennai (S), Guwahati (NE)</b>.</p>
+        <p>Role: manages 130+ airports and provides <b>CNS/ATM</b> (air traffic management) over Indian airspace.</p></div>
+      <div class="card fact reveal"><h4><span class="ic">◆</span>Aviation bodies — don't mix up</h4>
+        <p><b>AAI</b> = operator/infrastructure. <b>DGCA</b> = safety regulator. <b>BCAS</b> = civil aviation security.</p>
+        <p>International: <b>ICAO</b> (UN body, HQ <b>Montreal</b>, from the 1944 Chicago Convention) &amp; <b>IATA</b> (airline trade body, HQ Montreal).</p></div>
+    </div>
+
+    <div class="grid">
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Static GK to prioritise</h4>
+        <p>Indian polity basics, geography (rivers, states, capitals), key dates/history, science-everyday, economy terms, sports, awards, books &amp; authors. Build a one-page cheat-sheet and revise weekly.</p></div>
+      <div class="card trick reveal"><h4><span class="ic">▸</span>Current affairs window</h4>
+        <p>Focus on the <b>last 6–8 months</b> before the exam: national schemes, appointments, summits, defence, sports events, and anything <b>aviation/airport</b> in the news. Skim a monthly capsule.</p></div>
+      <div class="card pitfall reveal"><h4><span class="ic">✕</span>Don't over-memorise volatile facts</h4>
+        <p>Post-holders and "latest chairman/CEO" change often. Verify names close to your exam date from a current source rather than trusting an old list.</p></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q1</span><div class="qtext">The Airports Authority of India was formed in which year, and under which ministry?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">Formed on <b>1 April 1995</b> by merging IAAI and NAA under the AAI Act, 1994.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">It functions under the <b>Ministry of Civil Aviation</b>.</div></div>
+        <div class="answer"><span class="k">ans</span> 1995 · Ministry of Civil Aviation</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel easy">Q2</span><div class="qtext">Which body is the <b>safety regulator</b> of Indian civil aviation (not the airport operator)?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">AAI operates airports/airspace; regulation of safety is a separate body.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">That regulator is the <b>DGCA</b> — Directorate General of Civil Aviation. (Security is <b>BCAS</b>.)</div></div>
+        <div class="answer"><span class="k">ans</span> DGCA (Directorate General of Civil Aviation)</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">Q3</span><div class="qtext">Where is the headquarters of <b>ICAO</b>, and what does it govern?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">ICAO = International Civil Aviation Organization, a specialised UN agency from the 1944 Chicago Convention.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">It sets global standards for civil aviation; HQ in <b>Montreal, Canada</b>.</div></div>
+        <div class="answer"><span class="k">ans</span> Montreal, Canada — sets international civil-aviation standards</div>
+      </div></div>
+    </div>
+  </section>
+
+  <p class="part-head reveal">Part B · discipline-specific (IT / CSE)</p>
+
+  <!-- PART B -->
+  <section class="subj" id="partb">
+    <div class="flightstrip reveal"><span class="gate b">B</span><h2>Technical — IT / Computer Science</h2><span class="status">gate CS level</span></div>
+    <p class="sec-lead reveal">For the <b>Junior Executive (Information Technology)</b> post, Part B maps to the <b>GATE Computer Science &amp; IT</b> syllabus — the same core papers you'd revise for GATE CS. Here's the map, plus two representative solved problems.</p>
+    <div class="divider reveal"></div>
+
+    <div class="linkcard reveal">
+      <div class="ico">📘</div>
+      <div class="tx">
+        <h4>Your full Part B (IT) reference is a separate page</h4>
+        <p>The detailed technical console I built covers all of this in depth — complexity, data structures, algorithms, DP/greedy/graphs, OS, DBMS, networks, automata, digital logic &amp; COA, OOP — each with worked problems and step-by-step solutions. Open <code>cse-study-console.html</code> for Part B; use this page for Part A.</p>
+      </div>
+    </div>
+
+    <div class="tbl-wrap reveal">
+      <table>
+        <tr><th>Part B (IT) topic</th><th>What gets asked</th><th>Where to master it</th></tr>
+        <tr><td>Programming &amp; DS</td><td>C/OOP output, arrays, linked lists, trees, heaps, hashing</td><td class="mono amb">cse §02, §10</td></tr>
+        <tr><td>Algorithms</td><td>complexity, sorting, searching, DP, greedy, graphs</td><td class="mono amb">cse §01, §03, §04</td></tr>
+        <tr><td>Operating Systems</td><td>scheduling, deadlock, memory/paging, page replacement</td><td class="mono amb">cse §05</td></tr>
+        <tr><td>DBMS</td><td>SQL, normalization, keys, transactions, serializability</td><td class="mono amb">cse §06</td></tr>
+        <tr><td>Computer Networks</td><td>OSI/TCP-IP, subnetting, CRC, TCP/UDP, sliding window</td><td class="mono amb">cse §07</td></tr>
+        <tr><td>TOC &amp; Compilers</td><td>DFA/NFA, regex, grammars, parsing basics</td><td class="mono amb">cse §08</td></tr>
+        <tr><td>Digital Logic &amp; COA</td><td>number systems, K-maps, pipelining, cache</td><td class="mono amb">cse §09</td></tr>
+      </table>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">B-Q1</span><div class="qtext">Time complexity of <span class="m">for(i=1;i&lt;n;i=i*2) sum++;</span> ?</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">i doubles each iteration: 1, 2, 4, 8, … It stops once i ≥ n.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Number of doublings to reach n is log₂n.</div></div>
+        <div class="answer"><span class="k">ans</span> O(log n)</div>
+      </div></div>
+    </div>
+
+    <div class="prob reveal">
+      <div class="prob-head"><span class="plabel med">B-Q2</span><div class="qtext">Relation R(A,B,C), FDs <span class="m">A→B, B→C</span>. Find the candidate key and highest normal form.</div></div>
+      <button class="sol-btn"><span class="tri">▸</span> reveal solution</button>
+      <div class="sol"><div class="sol-inner">
+        <div class="step"><div class="snum">1</div><div class="stxt">A⁺ = {A} → +B (A→B) → +C (B→C) = all attributes → <b>A is the candidate key</b>.</div></div>
+        <div class="step"><div class="snum">2</div><div class="stxt">Single-attribute key → in 2NF (no partial dependency possible).</div></div>
+        <div class="step"><div class="snum">3</div><div class="stxt">But A→B→C is a <b>transitive dependency</b> (B is not a superkey, C is non-prime) → violates 3NF.</div></div>
+        <div class="answer"><span class="k">ans</span> Candidate key = A · highest normal form = 2NF</div>
+      </div></div>
+    </div>
+
+    <p class="sec-lead reveal" style="margin-top:20px">Not sitting the IT post? Tell me the discipline (Civil, Electrical, Electronics, ATC…) and I'll build the matching Part B set with the same trick-then-solved format.</p>
+  </section>
+
+  <footer>
+    <b>AAI-JE / CBT board</b> — a single-file prep console for the Airports Authority of India Junior Executive Computer Based Test.<br>
+    Part A applies to every discipline; Part B shown here is for IT/CSE. AAI facts verified against the Ministry of Civil Aviation and standard references.<br><br>
+    <b>Before the exam:</b> confirm the official 2026 pattern, section split and your discipline's Part B syllabus on aai.aero. No negative marking → attempt every question.
+  </footer>
+</main>
+
+<button class="backtop" id="backtop">↑ top</button>
+
+<script>
+const prog=document.getElementById('progress'), back=document.getElementById('backtop');
+addEventListener('scroll',()=>{
+  const h=document.documentElement, sc=h.scrollTop, max=h.scrollHeight-h.clientHeight;
+  prog.style.width=(max>0?(sc/max*100):0)+'%';
+  back.classList.toggle('show', sc>700);
+},{passive:true});
+back.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+document.querySelectorAll('.sol-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const sol=btn.nextElementSibling, open=btn.classList.toggle('open');
+    const label=btn.querySelector('.tri').nextSibling;
+    if(open){ sol.style.maxHeight=sol.scrollHeight+'px'; if(label) label.textContent=' hide solution'; }
+    else{ sol.style.maxHeight=0; if(label) label.textContent=' reveal solution'; }
+  });
+});
+addEventListener('resize',()=>{
+  document.querySelectorAll('.sol-btn.open').forEach(b=>{ b.nextElementSibling.style.maxHeight=b.nextElementSibling.scrollHeight+'px'; });
+});
+
+const secs=[...document.querySelectorAll('section.subj')];
+const links=[...document.querySelectorAll('.tabs a')];
+const spy=new IntersectionObserver((es)=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector('.tabs a[href="#'+e.target.id+'"]');
+      if(a){a.classList.add('active'); a.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});}
+    }
+  });
+},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>spy.observe(s));
+</script>
+</body>
+</html>
